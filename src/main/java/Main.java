@@ -1,33 +1,31 @@
-import java.io.File;
-import java.util.Scanner;
+import java.util.Map;
+import java.util.Set;
 
 public class Main {
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int correctCount = 0;
 
-        while (true) {
-            System.out.println("Введите путь к файлу:");
-            String path = sc.nextLine();
+        Statistics statistics = new Statistics();
 
-            File file = new File(path);
-            boolean fileExists = file.exists();
-            boolean isDirectory = file.isDirectory();
+        statistics.addEntry("/index.html", 200, "Windows");
+        statistics.addEntry("/about.html", 200, "Linux");
+        statistics.addEntry("/index.html", 200, "Windows");
+        statistics.addEntry("/contact.html", 404, "MacOS");
+        statistics.addEntry("/products.html", 200, "Windows");
+        statistics.addEntry("/about.html", 200, "Linux");
 
-            if (!fileExists || isDirectory) {
-                if (!fileExists) {
-                    System.out.println("Ошибка: файл по указанному пути не существует.");
-                } else {
-                    System.out.println("Ошибка: указан путь к папке, а нужен путь к файлу.");
-                }
-                continue;
-            }
+        Set<String> pages = statistics.getAllPages();
+        System.out.println("Pages:");
+        for (String page : pages) {
+            System.out.println(page);
+        }
 
-            correctCount++;
-            System.out.println("Путь указан верно");
-            System.out.println("Это файл номер " + correctCount);
+        System.out.println();
 
+        Map<String, Double> osStats = statistics.getOsStatistics();
+        System.out.println("OS statistics:");
+        for (Map.Entry<String, Double> entry : osStats.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
         }
     }
 }
