@@ -7,25 +7,26 @@ public class Main {
 
         Statistics statistics = new Statistics();
 
-        statistics.addEntry("/index.html", 200, "Windows");
-        statistics.addEntry("/about.html", 200, "Linux");
-        statistics.addEntry("/index.html", 200, "Windows");
-        statistics.addEntry("/contact.html", 404, "MacOS");
-        statistics.addEntry("/products.html", 200, "Windows");
-        statistics.addEntry("/about.html", 200, "Linux");
+        statistics.addEntry("/index.html", 200, "Chrome");
+        statistics.addEntry("/about.html", 404, "Firefox");
+        statistics.addEntry("/contact.html", 404, "Chrome");
+        statistics.addEntry("/products.html", 200, "Chrome");
+        statistics.addEntry("/index.html", 200, "Safari");
+        statistics.addEntry("/old-page.html", 404, "Firefox");
 
-        Set<String> pages = statistics.getAllPages();
-        System.out.println("Pages:");
-        for (String page : pages) {
+        Set<String> notFoundPages = statistics.getNotFoundPages();
+        System.out.println("Not found pages (404):");
+        for (String page : notFoundPages) {
             System.out.println(page);
         }
 
         System.out.println();
 
-        Map<String, Double> osStats = statistics.getOsStatistics();
-        System.out.println("OS statistics:");
-        for (Map.Entry<String, Double> entry : osStats.entrySet()) {
+        Map<String, Double> browserStats = statistics.getBrowserStatistics();
+        System.out.println("Browser statistics:");
+        for (Map.Entry<String, Double> entry : browserStats.entrySet()) {
             System.out.println(entry.getKey() + " -> " + entry.getValue());
         }
     }
 }
+
