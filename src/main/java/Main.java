@@ -7,40 +7,32 @@ public class Main {
         Statistics statistics = new Statistics();
 
         statistics.addEntry(
-                LocalDateTime.now().minusHours(3),
-                200,
-                "192.168.0.1",
-                new UserAgent("Mozilla/5.0 Chrome")
-        );
+                LocalDateTime.now().withSecond(10), "192.168.0.1",
+                new UserAgent("Mozilla/5.0 Chrome"),
+                "https://nova-news.ru/wp-login.php");
 
         statistics.addEntry(
-                LocalDateTime.now().minusHours(2),
-                404,
+                LocalDateTime.now().withSecond(10),
                 "192.168.0.2",
-                new UserAgent("Mozilla/5.0 Firefox")
-        );
+                new UserAgent("Mozilla/5.0 Firefox"),
+                "https://google.com/search");
 
         statistics.addEntry(
-                LocalDateTime.now().minusHours(1),
-                500,
-                "192.168.0.3",
-                new UserAgent("Googlebot")
-        );
-
-        statistics.addEntry(
-                LocalDateTime.now(),
-                200,
+                LocalDateTime.now().withSecond(10),
                 "192.168.0.1",
-                new UserAgent("Mozilla/5.0 Chrome")
-        );
+                new UserAgent("Mozilla/5.0 Chrome"),
+                "https://nova-news.ru/news");
 
-        System.out.println("Average visits per hour: "
-                + statistics.getAverageVisitsPerHour());
+        statistics.addEntry(
+                LocalDateTime.now().withSecond(20),
+                "192.168.0.3",
+                new UserAgent("GoogleBot"),
+                "https://yandex.ru");
 
-        System.out.println("Average error requests per hour: "
-                + statistics.getAverageErrorRequestsPerHour());
+        System.out.println("Peak visits per second: " + statistics.getPeakVisitsPerSecond());
 
-        System.out.println("Average visits per user: "
-                + statistics.getAverageVisitsPerUser());
+        System.out.println("Referer domains: " + statistics.getRefererDomains());
+
+        System.out.println("Max visits per user: " + statistics.getMaxVisitsPerUser());
     }
 }

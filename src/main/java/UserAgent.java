@@ -10,3 +10,4 @@ public class UserAgent {
         return value.contains("bot");
     }
 }
+

@@ -1,62 +1,71 @@
+import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Statistics {
 
-    private int totalVisits = 0;
-    private int errorRequests = 0;
+    private final Map<Integer, Integer> visitsPerSecond = new HashMap<>();
 
-    private LocalDateTime firstTime = null;
-    private LocalDateTime lastTime = null;
+    private final Set<String> refererDomains = new HashSet<>();
 
-    private final Set<String> uniqueUserIps = new HashSet<>();
+    private final Map<String, Integer> visitsPerUser = new HashMap<>();
 
     public void addEntry(
             LocalDateTime time,
-            int responseCode,
             String ip,
-            UserAgent userAgent
+            UserAgent userAgent,
+            String referer
     ) {
 
-        if (firstTime == null || time.isBefore(firstTime)) {
-            firstTime = time;
-        }
-        if (lastTime == null || time.isAfter(lastTime)) {
-            lastTime = time;
-        }
-
         if (!userAgent.isBot()) {
-            totalVisits++;
-            uniqueUserIps.add(ip);
+
+            int second = time.getSecond();
+            visitsPerSecond.put(
+                    second,
+                    visitsPerSecond.getOrDefault(second, 0) + 1
+            );
+
+            visitsPerUser.put(
+                    ip,
+                    visitsPerUser.getOrDefault(ip, 0) + 1
+            );
         }
 
-        if (responseCode >= 400 && responseCode < 600) {
-            errorRequests++;
+        if (referer != null && !referer.isEmpty()) {
+            try {
+                URI uri = URI.create(referer);
+                if (uri.getHost() != null) {
+                    refererDomains.add(uri.getHost());
+                }
+            } catch (Exception ignored) {
+            }
         }
     }
 
-    private long getHoursPeriod() {
-        if (firstTime == null || lastTime == null) {
-            return 1;
+    public int getPeakVisitsPerSecond() {
+        int max = 0;
+        for (int count : visitsPerSecond.values()) {
+            if (count > max) {
+                max = count;
+            }
         }
-        long hours = java.time.Duration.between(firstTime, lastTime).toHours();
-        return hours == 0 ? 1 : hours;
+        return max;
     }
 
-    public double getAverageVisitsPerHour() {
-        return (double) totalVisits / getHoursPeriod();
+    public Set<String> getRefererDomains() {
+        return refererDomains;
     }
 
-    public double getAverageErrorRequestsPerHour() {
-        return (double) errorRequests / getHoursPeriod();
-    }
-
-    public double getAverageVisitsPerUser() {
-        if (uniqueUserIps.isEmpty()) {
-            return 0;
+    public int getMaxVisitsPerUser() {
+        int max = 0;
+        for (int count : visitsPerUser.values()) {
+            if (count > max) {
+                max = count;
+            }
         }
-        return (double) totalVisits / uniqueUserIps.size();
+        return max;
     }
 }
-
