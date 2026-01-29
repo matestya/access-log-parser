@@ -1,5 +1,4 @@
-import java.util.Map;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 public class Main {
 
@@ -7,26 +6,41 @@ public class Main {
 
         Statistics statistics = new Statistics();
 
-        statistics.addEntry("/index.html", 200, "Chrome");
-        statistics.addEntry("/about.html", 404, "Firefox");
-        statistics.addEntry("/contact.html", 404, "Chrome");
-        statistics.addEntry("/products.html", 200, "Chrome");
-        statistics.addEntry("/index.html", 200, "Safari");
-        statistics.addEntry("/old-page.html", 404, "Firefox");
+        statistics.addEntry(
+                LocalDateTime.now().minusHours(3),
+                200,
+                "192.168.0.1",
+                new UserAgent("Mozilla/5.0 Chrome")
+        );
 
-        Set<String> notFoundPages = statistics.getNotFoundPages();
-        System.out.println("Not found pages (404):");
-        for (String page : notFoundPages) {
-            System.out.println(page);
-        }
+        statistics.addEntry(
+                LocalDateTime.now().minusHours(2),
+                404,
+                "192.168.0.2",
+                new UserAgent("Mozilla/5.0 Firefox")
+        );
 
-        System.out.println();
+        statistics.addEntry(
+                LocalDateTime.now().minusHours(1),
+                500,
+                "192.168.0.3",
+                new UserAgent("Googlebot")
+        );
 
-        Map<String, Double> browserStats = statistics.getBrowserStatistics();
-        System.out.println("Browser statistics:");
-        for (Map.Entry<String, Double> entry : browserStats.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
-        }
+        statistics.addEntry(
+                LocalDateTime.now(),
+                200,
+                "192.168.0.1",
+                new UserAgent("Mozilla/5.0 Chrome")
+        );
+
+        System.out.println("Average visits per hour: "
+                + statistics.getAverageVisitsPerHour());
+
+        System.out.println("Average error requests per hour: "
+                + statistics.getAverageErrorRequestsPerHour());
+
+        System.out.println("Average visits per user: "
+                + statistics.getAverageVisitsPerUser());
     }
 }
-
